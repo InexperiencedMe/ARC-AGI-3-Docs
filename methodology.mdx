@@ -39,7 +39,7 @@ Using the upper median human per level:
 
 For each level the AI completes, calculate:
 
-```
+```text
 level_score = (human_baseline_actions / ai_actions) ^ 2
 ```
 
@@ -61,7 +61,7 @@ The maximum game score is also determined by this weighted average structure —
 
 **Example:** A game has 5 levels and the AI completes only the first 4:
 
-```
+```text
 max_game_score = (1 + 2 + 3 + 4) / (1 + 2 + 3 + 4 + 5) = 10 / 15 = 66.7%
 ```
 

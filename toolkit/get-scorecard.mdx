@@ -25,7 +25,7 @@ env.step(GameAction.ACTION1)
 scorecard = arc.get_scorecard()
 if scorecard:
     print(f"Score: {scorecard.score}")
-    print(f"Games played: {len(scorecard.games)}")
+    print(f"Games played: {len(scorecard.environments)}")
 ```
 
 ## Scorecard Properties
@@ -37,7 +37,7 @@ scorecard = arc.get_scorecard()
 
 if scorecard:
     print(f"Score: {scorecard.score}")
-    print(f"Games: {scorecard.games}")
+    print(f"Games: {scorecard.environments}")
 ```
 
 ## See Full Scorecard

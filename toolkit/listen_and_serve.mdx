@@ -16,8 +16,9 @@ Start a blocking Flask server that exposes the REST API. Uses `arc_agi.server.cr
 - `port` (`int`, optional): Port to listen on. Default `8001`.
 - `competition_mode` (`bool`, optional): If `True`, enable competition mode. Default `False`.
 - `save_all_recordings` (`bool`, optional): If `True`, save recordings for all runs. Default `False`.
+- `include_frame_data` (`bool`, optional): If `True`, include frame arrays in saved recordings. Default `True`.
 - `add_cookie` (`Callable[[Response, str], Response]`, optional): Callback to inject a cookie into API responses. Receives `(response, api_key)`; must return the modified response. Use for session stickiness (e.g. ALB app cookies).
-- `scorecard_timeout` (`int`, optional): Idle timeout in seconds before scorecards are auto-closed. If set, starts a background cleanup loop.
+- `scorecard_timeout` (`int`, optional): Idle timeout in minutes before scorecards are auto-closed. Automatic cleanup runs when `on_scorecard_close` is also provided.
 - `on_scorecard_close` (`Callable[[EnvironmentScorecard], None]`, optional): Callback invoked when a scorecard is closed (manually or by timeout).
 - `extra_api_routes` (`Callable[[Arcade, Flask], None]`, optional): Callback to register custom routes. Receives `(arcade, app)`.
 - `renderer` (`Callable[[int, FrameDataRaw], None]`, optional): Callback invoked for each frame during gameplay. Receives `(step_index, frame_data)`. Use for logging, visualization, or custom display.

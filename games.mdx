@@ -6,8 +6,8 @@ icon: "gamepad-2"
 
 ARC-AGI-3 games are turn-based systems where agents interact with 2D grid environments through a standardized action interface. Each game maintains state through discrete action-response cycles.
 
-- Agents will receive a 1-N frames of JSON objects with the game state and metadata.
-- Agents will respond with an [action](/actions) 1-5 or a 6th action which includes x, y coordinates.
+- Each response contains one or more 2D frame arrays plus game-state metadata.
+- Agents choose from the action IDs in the response's `available_actions` field. `ACTION6` also requires `x` and `y` coordinates.
 
 ### Available Games
 
@@ -34,25 +34,28 @@ Each game provides an explicit set of actions that an agent can take. Actions av
 
 Typically, the available actions include:
 * Actions 1–4: ex: move up, down, left, or right
+* Action 5: a game-specific interaction
 * Action 6: A complex action (if supported by the game)
+* Action 7: undo
 
 To learn more about each action and what it does, please visit the [Actions](/actions).
 
 ## Running a Full Playtest
 
-To run a complete playtest, you'll need to integrate your agent with scorecard management and the game loop. This is what happens "under the hood" when you run commands like `uv run main.py --agent=random --game=ls20` (from the [Quick Start](./quick-start.md)). Below is pseudocode for the key steps. For a ready-to-use implementation, see the [Swarms](./swarms.md) guide—which can automate this for you across multiple games.
+To run a complete playtest, you'll need to integrate your agent with scorecard management and the game loop. This is what happens "under the hood" when using an agent harness. Below is an example of the key steps. For a ready-to-use implementation, see the [benchmarking harness](/benchmarking-agent).
 
 ## Game State Enumeration
 
 | State | Description |
 |-------|-------------|
+| `NOT_PLAYED` | No game has been started |
 | `NOT_FINISHED` | Game is active and awaiting next action |
 | `WIN` | Objective completed successfully |
-| `GAME_OVER` | Game terminated due to the max actions reached or other conditions |
+| `GAME_OVER` | The run ended without a win |
 
 ## Full Playtest
 
-This is a bare-bones example for (educational purposes) is also available as a [notebook](https://colab.research.google.com/drive/1Bt4PU6Xl_avLPV70hNAyReXaRqFDhifJ?usp=sharing).
+This bare-bones example is also available as a [notebook](https://colab.research.google.com/drive/1Bt4PU6Xl_avLPV70hNAyReXaRqFDhifJ?usp=sharing).
 
 ```python
 #!/usr/bin/env python3
@@ -61,7 +64,6 @@ Simple demo showing what a swarm agent does under the hood.
 This is a bare-bones example for educational purposes.
 """
 
-import json
 import os
 import random
 import requests
@@ -87,6 +89,7 @@ print("This shows what happens when an agent plays an ARC game.\n")
 # Step 1: Get available games
 print("STEP 1: Getting list of games...")
 response = session.get(f"{ROOT_URL}/api/games")
+response.raise_for_status()
 games = [g["game_id"] for g in response.json()]
 print(f"Found {len(games)} games")
 
@@ -100,6 +103,7 @@ response = session.post(
     f"{ROOT_URL}/api/scorecard/open",
     json={"tags": ["manual_demo"]}
 )
+response.raise_for_status()
 card_id = response.json()["card_id"]
 print(f"Scorecard ID: {card_id}\n")
 
@@ -123,33 +127,32 @@ if response.status_code != 200:
 game_data = response.json()
 guid = game_data["guid"]
 state = game_data["state"]
-score = game_data.get("score", 0)
-print(f"Game started! State: {state}, Score: {score}\n")
+levels_completed = game_data["levels_completed"]
+print(f"Game started! State: {state}, Levels completed: {levels_completed}\n")
 
 # Step 4: Play with random actions (max 5 actions)
 print("STEP 4: Taking random actions...")
-actions = ["ACTION1", "ACTION2", "ACTION3", "ACTION4", "ACTION5", "ACTION6", "ACTION7"]
 
 for i in range(5):
     # Check if game is over
     if state in ["WIN", "GAME_OVER"]:
-        print(f"\nGame ended! Final state: {state}, Score: {score}")
+        print(f"\nGame ended! Final state: {state}, Levels completed: {levels_completed}")
         break
     
-    # Pick a random action
-    action = random.choice(actions)
+    # Pick from the actions available in the current state
+    action_id = random.choice(game_data["available_actions"])
+    action = f"ACTION{action_id}"
     
     # Build request data
     request_data = {
         "game_id": game_id,
-        "card_id": card_id,
         "guid": guid
     }
     
     # ACTION6 needs x,y coordinates
     if action == "ACTION6":
-        request_data["x"] = random.randint(0, 29)
-        request_data["y"] = random.randint(0, 29)
+        request_data["x"] = random.randint(0, 63)
+        request_data["y"] = random.randint(0, 63)
         print(f"Action {i+1}: {action} at ({request_data['x']}, {request_data['y']})", end="")
     else:
         print(f"Action {i+1}: {action}", end="")
@@ -159,11 +162,12 @@ for i in range(5):
         f"{ROOT_URL}/api/cmd/{action}",
         json=request_data
     )
+    response.raise_for_status()
     
     game_data = response.json()
     state = game_data["state"]
-    score = game_data.get("score", 0)
-    print(f" -> State: {state}, Score: {score}")
+    levels_completed = game_data["levels_completed"]
+    print(f" -> State: {state}, Levels completed: {levels_completed}")
 
 # Step 5: Close scorecard
 print("\nSTEP 5: Closing scorecard...")
@@ -171,8 +175,9 @@ response = session.post(
     f"{ROOT_URL}/api/scorecard/close",
     json={"card_id": card_id}
 )
+response.raise_for_status()
 scorecard = response.json()
-print("Scorecard closed!")
+print(f"Scorecard closed! Final score: {scorecard['score']}")
 print(f"\nView results at: {ROOT_URL}/scorecards/{card_id}")
 
 print("\n=== DEMO COMPLETE ===")
@@ -185,4 +190,4 @@ print("5. Close the scorecard when done")
 print("\nThe real agents use smarter strategies instead of random!")
 ```
 
-This workflow ensures your plays are tracked officially. For parallel playtests across games, use a [swarm](./swarms.md) to handle the orchestration automatically.
+This workflow ensures your plays are tracked officially. For parallel playtests across games, use the [benchmarking harness](/benchmarking-agent) to handle the orchestration automatically.

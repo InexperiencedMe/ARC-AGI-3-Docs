@@ -18,9 +18,10 @@ Below is the full workflow for running a game programmatically via the API.
 
 | State | Description |
 |-------|-------------|
+| `NOT_PLAYED` | No game has been started |
 | `NOT_FINISHED` | Game is active and awaiting next action |
 | `WIN` | Objective completed successfully |
-| `GAME_OVER` | Game terminated due to the max actions reached or other conditions |
+| `GAME_OVER` | The run ended without a win |
 
 ## Full Playtest Example
 
@@ -33,7 +34,6 @@ Simple demo showing what a swarm agent does under the hood.
 This is a bare-bones example for educational purposes.
 """
 
-import json
 import os
 import random
 import requests
@@ -59,6 +59,7 @@ print("This shows what happens when an agent plays an ARC game.\n")
 # Step 1: Get available games
 print("STEP 1: Getting list of games...")
 response = session.get(f"{ROOT_URL}/api/games")
+response.raise_for_status()
 games = [g["game_id"] for g in response.json()]
 print(f"Found {len(games)} games")
 
@@ -72,6 +73,7 @@ response = session.post(
     f"{ROOT_URL}/api/scorecard/open",
     json={"tags": ["manual_demo"]}
 )
+response.raise_for_status()
 card_id = response.json()["card_id"]
 print(f"Scorecard ID: {card_id}\n")
 
@@ -95,33 +97,32 @@ if response.status_code != 200:
 game_data = response.json()
 guid = game_data["guid"]
 state = game_data["state"]
-score = game_data.get("score", 0)
-print(f"Game started! State: {state}, Score: {score}\n")
+levels_completed = game_data["levels_completed"]
+print(f"Game started! State: {state}, Levels completed: {levels_completed}\n")
 
 # Step 4: Play with random actions (max 5 actions)
 print("STEP 4: Taking random actions...")
-actions = ["ACTION1", "ACTION2", "ACTION3", "ACTION4", "ACTION5", "ACTION6", "ACTION7"]
 
 for i in range(5):
     # Check if game is over
     if state in ["WIN", "GAME_OVER"]:
-        print(f"\nGame ended! Final state: {state}, Score: {score}")
+        print(f"\nGame ended! Final state: {state}, Levels completed: {levels_completed}")
         break
 
-    # Pick a random action
-    action = random.choice(actions)
+    # Pick from the actions available in the current state
+    action_id = random.choice(game_data["available_actions"])
+    action = f"ACTION{action_id}"
 
     # Build request data
     request_data = {
         "game_id": game_id,
-        "card_id": card_id,
         "guid": guid
     }
 
     # ACTION6 needs x,y coordinates
     if action == "ACTION6":
-        request_data["x"] = random.randint(0, 29)
-        request_data["y"] = random.randint(0, 29)
+        request_data["x"] = random.randint(0, 63)
+        request_data["y"] = random.randint(0, 63)
         print(f"Action {i+1}: {action} at ({request_data['x']}, {request_data['y']})", end="")
     else:
         print(f"Action {i+1}: {action}", end="")
@@ -131,11 +132,12 @@ for i in range(5):
         f"{ROOT_URL}/api/cmd/{action}",
         json=request_data
     )
+    response.raise_for_status()
 
     game_data = response.json()
     state = game_data["state"]
-    score = game_data.get("score", 0)
-    print(f" -> State: {state}, Score: {score}")
+    levels_completed = game_data["levels_completed"]
+    print(f" -> State: {state}, Levels completed: {levels_completed}")
 
 # Step 5: Close scorecard
 print("\nSTEP 5: Closing scorecard...")
@@ -143,8 +145,9 @@ response = session.post(
     f"{ROOT_URL}/api/scorecard/close",
     json={"card_id": card_id}
 )
+response.raise_for_status()
 scorecard = response.json()
-print("Scorecard closed!")
+print(f"Scorecard closed! Final score: {scorecard['score']}")
 print(f"\nView results at: {ROOT_URL}/scorecards/{card_id}")
 
 print("\n=== DEMO COMPLETE ===")

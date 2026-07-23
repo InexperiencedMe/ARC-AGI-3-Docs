@@ -17,9 +17,17 @@ For game runs done via the API, scorecards can be viewed online at https://arcpr
 
 | Field | Description |
 |-------|-------------|
-| tags | Array of strings used to categorize and filter scorecards (e.g., ["experiment1", "v2.0", "test"]) |
-| source_url | Optional URL field returned in the scorecard response |
-| opaque | Optional field for arbitrary data |
+| `card_id` | Unique scorecard ID |
+| `score` | Average of the best score for each environment |
+| `environments` | Per-environment runs, scores, action counts, completed levels, and reset counts |
+| `tags_scores` | Aggregate results grouped by game metadata tags |
+| `total_environments_completed` | Number of environments with a winning run |
+| `total_levels_completed` | Levels completed across the best environment runs |
+| `total_actions` | Actions taken across all recorded runs |
+| `tags` | Labels used to categorize and filter scorecards (e.g., `["experiment1", "v2.0", "test"]`) |
+| `source_url` | Optional source or provenance URL |
+| `opaque` | Optional JSON-serializable metadata |
+| `competition_mode` | Whether competition restrictions apply to the scorecard |
 
 ```python
 import arc_agi
@@ -28,7 +36,7 @@ arc = arc_agi.Arcade()
 
 scorecard_id = arc.create_scorecard(
     tags=["experiment", "my-awesome-agent-v5-final-final"],
-    source_url="https://github.com/my/repo",
+    source_url="https://github.com/arcprize/docs",
     opaque={"custom_field": "any data"}
 )
 ```

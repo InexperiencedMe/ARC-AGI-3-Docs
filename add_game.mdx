@@ -28,7 +28,7 @@ Each game adheres to the following structure:
 
 To start building your own environment, create the following directory structure:
 
-```
+```text
 ARC-AGI/
 └── environment_files/
     └── ab12/               # use any game ID you want
@@ -43,8 +43,7 @@ Create `metadata.json`:
 
 ```json
 {
-  "game_id": "ab12-v1",
-  "local_dir": "environment_files\\ab12\\v1"
+  "game_id": "ab12-v1"
 }
 ```
 
@@ -54,7 +53,8 @@ Create `metadata.json`:
 | `default_fps` | Frames per second for playback (optional) |
 | `baseline_actions` | Array of average action counts per level (optional) |
 | `tags` | Optional tags for categorization |
-| `local_dir` | Relative path to game directory |
+
+The Toolkit derives the local directory from the location of `metadata.json`; you do not need to include a `local_dir` field.
 
 ## Imports and Constants
 

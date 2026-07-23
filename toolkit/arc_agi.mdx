@@ -36,7 +36,8 @@ Controls where games are loaded from. See [Local vs Online](/local-vs-online) fo
 |------|-------------|
 | `OperationMode.NORMAL` | Load both local and remote games (default) |
 | `OperationMode.OFFLINE` | Load local games only — fast, no rate limits |
-| `OperationMode.ONLINE` | Load remote games only — enables scorecards and replays |
+| `OperationMode.ONLINE` | Load remote games only — enables online scorecards and replays |
+| `OperationMode.COMPETITION` | Load remote games only and enforce competition scoring restrictions |
 
 ```python
 from arc_agi import Arcade, OperationMode
@@ -49,6 +50,9 @@ arc = Arcade(operation_mode=OperationMode.OFFLINE)
 
 # Remote only (for scorecards and replays)
 arc = Arcade(operation_mode=OperationMode.ONLINE)
+
+# Remote only with competition restrictions
+arc = Arcade(operation_mode=OperationMode.COMPETITION)
 ```
 
 You can also set this via environment variable:
@@ -59,7 +63,7 @@ export OPERATION_MODE=OFFLINE
 
 ### `arc_api_key`
 
-API key for the ARC API. Required for `ONLINE` mode. If empty and not in offline mode, an anonymous key will be automatically fetched.
+API key for the ARC API. If it is empty and the Toolkit is not in `OFFLINE` mode, an anonymous key is fetched automatically. Registering for a key gives you access to additional games.
 
 ```python
 # Explicitly set API key
@@ -97,7 +101,7 @@ Environment variable: `RECORDINGS_DIR`
 Base URL for the ARC API. Default: `"https://three.arcprize.org"`.
 
 ```python
-arc = Arcade(arc_base_url="https://custom-endpoint.example.com")
+arc = Arcade(arc_base_url="https://example.com")
 ```
 
 Environment variable: `ARC_BASE_URL`
@@ -119,13 +123,14 @@ arc = Arcade(logger=my_logger)
 
 Create and initialize an environment wrapper for a specific game.
 
-**Signature:** `make(game_id, seed=0, scorecard_id=None, save_recording=False, render_mode=None, renderer=None)`
+**Signature:** `make(game_id, seed=0, scorecard_id=None, save_recording=False, include_frame_data=True, render_mode=None, renderer=None)`
 
 **Parameters:**
 - `game_id` (`str`): Game identifier in format `'ls20'` or `'ls20-1234abcd'`. The first 4 characters are the game_id, everything after `'-'` is the version.
 - `seed` (`int`, optional): Random seed for the game. Defaults to `0`.
 - `scorecard_id` (`str`, optional): Scorecard ID for tracking runs. If `None` is provided (the default), the system will create and maintain a single default scorecard that is automatically reused across all `make()` calls. This allows you to track multiple games in the same scorecard without explicitly managing scorecard IDs.
 - `save_recording` (`bool`, optional): Whether to save recordings to JSONL file. Defaults to `False`.
+- `include_frame_data` (`bool`, optional): Whether local JSONL recordings include frame arrays. Defaults to `True` and has no effect unless `save_recording=True`.
 - `render_mode` (`str`, optional): Render mode string (`"human"`, `"terminal"`, `"terminal-fast"`). If provided, creates a renderer automatically.
 - `renderer` (`Callable[[int, FrameDataRaw], None]`, optional): Custom renderer function. If both `render_mode` and `renderer` are provided, `renderer` takes precedence.
 
@@ -160,7 +165,7 @@ Create a new scorecard for tracking game runs.
 
 **Parameters:**
 - `source_url` (`str`, optional): Optional source URL for the scorecard.
-- `tags` (`list[str]`, optional): Optional list of tags for the scorecard. Defaults to `["wrapper"]`.
+- `tags` (`list[str]`, optional): Optional list of tags for the scorecard. Online scorecards default to `["wrapper"]`; local scorecards leave tags unset.
 - `opaque` (`Any`, optional): Optional opaque data for the scorecard.
 
 **Returns:**
@@ -169,7 +174,7 @@ Create a new scorecard for tracking game runs.
 **Example:**
 ```python
 scorecard_id = arc.create_scorecard(
-    source_url="https://github.com/my/repo",
+    source_url="https://github.com/arcprize/docs",
     tags=["experiment", "v1"]
 )
 ```
@@ -202,7 +207,7 @@ Get a scorecard by ID, converted to `EnvironmentScorecard`.
 scorecard = arc.get_scorecard()
 if scorecard:
     print(f"Score: {scorecard.score}")
-    print(f"Games played: {len(scorecard.games)}")
+    print(f"Games played: {len(scorecard.environments)}")
 ```
 
 ### `close_scorecard()`

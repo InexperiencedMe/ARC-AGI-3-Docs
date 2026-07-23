@@ -56,6 +56,39 @@ print(arc.get_scorecard())
 - [Local vs Online](/local-vs-online) — Choose how to run games
 
 ## Changelog
+## [0.9.9] - 2026-06-10
+
+### Updated
+- Remote action failures now include the HTTP response body in error logs
+
+## [0.9.8] - 2026-04-17
+
+### Fixed
+- Full game resets occurring in competition mode
+
+## [0.9.7] - 2026-04-14
+
+### Updated
+- Increased the per-level score cap from 100% to 115% and capped each game by the weighted maximum for its completed levels
+
+### Fixed
+- Memory leaks related to dynamically loaded game code and GUID mismatches
+
+## [0.9.6] - 2026-03-21
+
+### Fixed
+- Scoring updates after a command was received in the `GAME_OVER` state
+
+## [0.9.5] - 2026-03-19
+
+### Fixed
+- Scorecards not updating when `ONLY_RESET_LEVELS` was set
+
+## [0.9.4] - 2026-03-10
+
+### Added
+- `include_frame_data` parameter for `make()` and `listen_and_serve()`
+
 ## [0.9.3] - 2026-03-09
 
 ### Added
