@@ -5,7 +5,7 @@ description: "Anthropic Template"
 icon: "asterisk"
 ---
 
-[Claude Code](https://www.anthropic.com/claude-code) is Anthropic’s code interface for the Claude family of models. A member of the Claude Code team has published an SDK that wires Claude Code into the ARC-AGI-3 API so you can drive games directly from the terminal.
+[Claude Code](https://www.anthropic.com/claude-code) is Anthropic's code interface for the Claude family of models. A member of the Claude Code team has published an SDK that wires Claude Code into the ARC-AGI-3 API so you can drive games directly from the terminal.
 
 Repository: https://github.com/ThariqS/ARC-AGI-3-ClaudeCode-SDK
 
@@ -13,7 +13,7 @@ Key features:
 
 - Minimal JavaScript/Node CLI wrappers (no Python required).
 - Helper scripts for listing games, opening / closing score-cards, and submitting actions.
-- Turn-based “auto-solver” (`play-arc-with-claude.js`) that lets Claude iteratively reason about the grid, decide on the next action, and track progress.
+- Turn-based "auto-solver" (`play-arc-with-claude.js`) that lets Claude iteratively reason about the grid, decide on the next action, and track progress.
 - Works with the **Claude Code CLI** (install via `npm i -g @anthropic-ai/claude`) so you can hop into an interactive session at any point.
 
 Quick start:
@@ -35,4 +35,4 @@ node play-arc-with-claude.js ls20-016295f7601e 100
 
 The SDK ships with convenience scripts in the `actions/` folder (`list-games.js`, `start-game.js`, `action.js`, etc.) if you prefer a more manual driving style.
 
-Because this template lives in its own repository, you don’t invoke it via `uv run main.py`; instead run the Node scripts shown above (or adapt them to your workflow).
+Because this template lives in its own repository, you don't invoke it via `uv run main.py`; instead run the Node scripts shown above (or adapt them to your workflow).

@@ -5,8 +5,17 @@ description: "Structure and format of ARC-AGI-3 game environments"
 
 ARC-AGI-3 games are turn-based environments where agents interact with 2D grids through a standardized action interface. Each game maintains state through discrete action-response cycles.
 
-- Agents receive 1-N frames of JSON objects with the game state and metadata.
+- Each response contains one or more 2D frame arrays plus game-state metadata.
 - Agents respond with an [action](/actions) to interact with the game.
+
+## Game States
+
+| State | Description |
+|-------|-------------|
+| `NOT_PLAYED` | No game has been started |
+| `NOT_FINISHED` | The game is active and awaiting another action |
+| `WIN` | The objective was completed successfully |
+| `GAME_OVER` | The run ended without a win |
 
 ## Grid Structure
 

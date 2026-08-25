@@ -11,8 +11,8 @@ Recordings let you view and share your agent's gameplay sessions.
 | Method | Recordings Available |
 |--------|---------------------|
 | **API** | Yes — viewable online via scorecard |
-| **Swarm** | Yes — saved locally and viewable online |
-| **Local Toolkit** | No — running locally without API does not generate recordings |
+| **Benchmarking harness** | Yes — saved locally and viewable online |
+| **Python Toolkit** | Optional — set `save_recording=True` when calling `make()` |
 
 ## Online Replays
 
@@ -24,13 +24,23 @@ Here is an example [recording](https://arcprize.org/replay/1d251d20-9043-4ace-9f
 
 ## Local Recording Files
 
-When running a [swarm](/swarms), agent gameplay is recorded by default and stored in the `recordings/` directory with GUID-based filenames:
+The Python Toolkit saves local or remote runs when you enable recording:
 
-```
-ls20-6cbb1acf0530.random.100.a1b2c3d4-e5f6-7890-abcd-ef1234567890.recording.jsonl
+```python
+env = arc.make(
+    "ls20",
+    save_recording=True,
+    include_frame_data=True,
+)
 ```
 
-The filename format is: `{game_id}.{agent_type}.{max_actions}.{guid}.recording.jsonl`
+Files are written beneath the configured `recordings_dir` using this layout:
+
+```text
+recordings/<scorecard_id>/<game_id>-<guid>.jsonl
+```
+
+Set `include_frame_data=False` to omit frame arrays and reduce file size. The [benchmarking harness](/benchmarking-agent) also writes run recordings, model responses, token usage, and per-step records beneath `recordings/`.
 
 ## Recording File Format
 
@@ -39,6 +49,6 @@ The filename format is: `{game_id}.{agent_type}.{max_actions}.{guid}.recording.j
 Recordings are stored in JSONL format with timestamped entries:
 
 ```json
-{"timestamp": "2024-01-15T10:30:45.123456+00:00", "data": {"game_id": "ls20-016295f7601e", "frame": [...], "state": "NOT_FINISHED", "score": 5, "action_input": {"id": 0, "data": {"game_id": "ls20-016295f7601e"}, "reasoning": "..."}, "guid": "...", "full_reset": false}}
-{"timestamp": "2024-01-15T10:30:46.234567+00:00", "data": {"game_id": "ls20-016295f7601e", "frame": [...], "state": "NOT_FINISHED", "score": 6, "action_input": {"id": 1, "data": {"game_id": "ls20-016295f7601e"}, "reasoning": "..."}, "guid": "...", "full_reset": false}}
+{"timestamp": "2026-07-22T10:30:45.123456+00:00", "data": {"game_id": "ls20-016295f7601e", "state": "NOT_FINISHED", "levels_completed": 0, "win_levels": 7, "action_input": {"id": "RESET", "data": {}, "reasoning": null}, "guid": "...", "full_reset": true, "available_actions": [1, 2, 3, 4, 6], "frame": [...]}}
+{"timestamp": "2026-07-22T10:30:46.234567+00:00", "data": {"game_id": "ls20-016295f7601e", "state": "NOT_FINISHED", "levels_completed": 0, "win_levels": 7, "action_input": {"id": "ACTION1", "data": {}, "reasoning": {"thought": "move up"}}, "guid": "...", "full_reset": false, "available_actions": [1, 2, 3, 4, 6], "frame": [...]}}
 ```

@@ -32,9 +32,29 @@ components:
           description: Stable, globally unique ID combining slug and version/hash.
         title:
           type: string
+          nullable: true
           example: LS20
           description: Display title shown in UIs and scorecards.
-      required: [game_id, title]
+        default_fps:
+          type: integer
+          nullable: true
+          description: Default playback frame rate for the game.
+        tags:
+          type: array
+          nullable: true
+          items:
+            type: string
+          description: Public labels associated with the game.
+        date_downloaded:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp associated with the available game metadata.
+        class_name:
+          type: string
+          nullable: true
+          description: Python game class name derived from the game ID when omitted in metadata.
+      required: [game_id]
 
     OpenScorecardRequest:
       type: object
@@ -42,7 +62,7 @@ components:
         Optional metadata sent when opening a scorecard.  
         Every field is optional; omit any you don't need.  
         Use this to attach provenance links, free-form tags, or an
-        “opaque” JSON blob describing the run (e.g. model settings,
+        "opaque" JSON blob describing the run (e.g. model settings,
         hyper-parameters, experiment notes). The opaque payload must not
         exceed 16 KB once serialized.
       properties:
@@ -56,16 +76,17 @@ components:
           items:
             type: string
         opaque:
-          type: object
           description: |
-            Free-form JSON data (≤ 16 KB). Stored verbatim; the service
+            Any JSON-serializable value (≤ 16 KB). Stored verbatim; the service
             does not inspect or validate its structure.
-          additionalProperties: true
+        competition_mode:
+          type: boolean
+          description: Set to `true` to enable competition restrictions for this scorecard.
 
     OpenScorecardResponse:
       type: object
       description: |
-        Response returned after a successful “open scorecard” request.
+        Response returned after a successful "open scorecard" request.
         Contains the server-generated identifier for this tracked run.
       properties:
         card_id:
@@ -101,8 +122,9 @@ components:
           type: string
           description: The scorecard ID returned by **OpenScorecardResponse**.
         score:
-          type: integer
-          description: Aggregate score for this scorecard (sum of per-level scores).
+          type: number
+          format: float
+          description: Average of the best per-environment scores in this scorecard.
         source_url:
           type: string
           format: uri
@@ -127,16 +149,18 @@ components:
           items:
             $ref: '#/components/schemas/EnvironmentSummary'
         opaque:
-          type: object
           description: |
-            Free-form JSON blob (≤ 16 KB) exactly as provided when the
+            JSON value (≤ 16 KB) exactly as provided when the
             scorecard was opened. Absent if none was supplied.
-          additionalProperties: true
         tags_scores:
           type: array
           description: Per-tag aggregate statistics for runs that were tagged.
           items:
             $ref: '#/components/schemas/TagScore'
+        competition_mode:
+          type: boolean
+          nullable: true
+          description: Whether competition restrictions apply to this scorecard.
         open_at:
           type: string
           format: date-time
@@ -147,25 +171,23 @@ components:
           description: When the scorecard was last updated (e.g. last action or close).
         total_environments_completed:
           type: integer
-          description: Number of environments that reached a terminal state (WIN or GAME_OVER).
+          description: Number of environments with at least one run that reached WIN.
         total_environments:
           type: integer
           description: Total number of environments in this scorecard.
         total_levels_completed:
           type: integer
-          description: Cumulative levels completed across all runs.
+          description: Sum of the highest completed-level count for each environment.
         total_levels:
           type: integer
           description: Total number of levels across all environments.
         total_actions:
           type: integer
-          description: Cumulative number of actions taken across all plays.
+          description: Number of actions taken across all recorded runs.
       required:
         - card_id
         - score
         - environments
-        - open_at
-        - last_update
         - total_environments_completed
         - total_environments
         - total_levels_completed
@@ -187,17 +209,18 @@ components:
           items:
             $ref: '#/components/schemas/RunSummary'
         score:
-          type: integer
-          description: Aggregate score for this environment.
+          type: number
+          format: float
+          description: Best run score for this environment.
         actions:
           type: integer
           description: Total actions taken in this environment across all runs.
         levels_completed:
           type: integer
-          description: Levels completed in this environment.
+          description: Highest completed-level count among this environment's runs.
         completed:
           type: boolean
-          description: Whether this environment reached a terminal state (WIN or GAME_OVER).
+          description: Whether at least one run in this environment reached WIN.
         level_count:
           type: integer
           description: Number of levels in this environment.
@@ -220,8 +243,9 @@ components:
           type: string
           description: Server-generated session id for this run.
         score:
-          type: integer
-          description: Score achieved in this run (0–254).
+          type: number
+          format: float
+          description: Score achieved in this run.
         levels_completed:
           type: integer
           description: Number of levels completed in this run.
@@ -236,17 +260,17 @@ components:
           description: |
             Final state of the run:
             • **NOT_FINISHED** - run is active.  
-            • **NOT_STARTED**  - run has ended and would need RESET to continue.  
+            • **NOT_PLAYED**   - no game has been started.
             • **WIN**          - run ended in victory.  
             • **GAME_OVER**    - run ended in defeat.
-          enum: [NOT_FINISHED, NOT_STARTED, WIN, GAME_OVER]
+          enum: [NOT_PLAYED, NOT_FINISHED, WIN, GAME_OVER]
         completed:
           type: boolean
-          description: Whether the run reached a terminal state (WIN or GAME_OVER).
+          description: Whether the run reached the WIN state.
         level_scores:
           type: array
           description: Score achieved at each level (positional).
-          items: { type: integer }
+          items: { type: number, format: float }
         level_actions:
           type: array
           description: Actions taken at each level (positional).
@@ -282,7 +306,8 @@ components:
           type: string
           description: Session id associated with this tag entry.
         score:
-          type: integer
+          type: number
+          format: float
           description: Aggregate score for this tag.
         levels_completed:
           type: integer
@@ -295,11 +320,11 @@ components:
           description: Resets for this tag.
         state:
           type: string
-          enum: [NOT_FINISHED, NOT_STARTED, WIN, GAME_OVER]
+          enum: [NOT_PLAYED, NOT_FINISHED, WIN, GAME_OVER]
           description: Terminal state for this tag run, if applicable.
         completed:
           type: boolean
-          description: Whether this tag run reached a terminal state.
+          description: Whether this tag aggregate reached the WIN state.
         number_of_levels:
           type: integer
           description: Number of levels.
@@ -308,13 +333,9 @@ components:
           description: Number of environments.
       required:
         - id
-        - guid
         - score
         - levels_completed
         - actions
-        - resets
-        - state
-        - completed
         - number_of_levels
         - number_of_environments
 
@@ -331,7 +352,7 @@ components:
         • **With `guid`** → The server issues a reset to that specific
           instance:
             - If at least one ACTION command has been executed in the **current
-              level**, only that level is reset (typical “try again” behaviour).
+              level**, only that level is reset (typical "try again" behaviour).
             - If no ACTION commands have been executed since the last level
               transition, the entire game is reset to its initial state.
 
@@ -361,7 +382,7 @@ components:
     SimpleActionCommand:
       type: object
       description: |
-        Issues a one-parameter action (ACTION1 - ACTION5) to a running
+        Issues a one-parameter action (ACTION1 - ACTION5 or ACTION7) to a running
         game instance identified by `guid`.
 
         **Important:** Include any cookies (especially `AWSALB*` cookies) received from previous RESET or ACTION responses to ensure session affinity.
@@ -373,12 +394,10 @@ components:
           type: string
           description: Server-generated session ID obtained from a RESET response.
         reasoning:
-          type: object
           description: |
-            Optional, caller-defined JSON blob (≤ 16 KB) capturing the
+            Optional, caller-defined JSON value (≤ 16 KB once serialized) capturing the
             agent's internal reasoning, model parameters, or any other
             metadata you'd like to store alongside the action.
-          additionalProperties: true
       required: [game_id, guid]
 
     ComplexActionCommand:
@@ -408,19 +427,17 @@ components:
           maximum: 63
           description: Vertical coordinate on the game grid (0 = top, 63 = bottom).
         reasoning:
-          type: object
           description: |
-            Optional, caller-defined JSON blob (≤ 16 KB) capturing the
+            Optional, caller-defined JSON value (≤ 16 KB once serialized) capturing the
             agent's internal reasoning, model parameters, or any other
             metadata you'd like to store alongside the action.
-          additionalProperties: true          
       required: [game_id, guid, x, y]
 
     FrameResponse:
       type: object
       description: |
         Snapshot returned after every RESET or ACTION command.  
-        Includes the latest visual frame(s), cumulative score details, the
+        Includes the latest visual frame(s), cumulative progress, the
         current game state, and an echo of the triggering action.
       properties:
         game_id:
@@ -450,10 +467,10 @@ components:
             Current state of the session:
             
             • **NOT_FINISHED** - game in progress, not yet WIN or GAME_OVER.  
-            • **NOT_STARTED**  - session has ended (WIN or GAME_OVER) and requires RESET.  
+            • **NOT_PLAYED**   - no game has been started.
             • **WIN**          - session ended in victory.  
             • **GAME_OVER**    - session ended in defeat.
-          enum: [NOT_FINISHED, NOT_STARTED, WIN, GAME_OVER]
+          enum: [NOT_PLAYED, NOT_FINISHED, WIN, GAME_OVER]
         levels_completed:
           type: integer
           description: Current cumulative number of levels completed for this run.
@@ -473,17 +490,24 @@ components:
           properties:
             id:
               type: integer
-              description: Client-assigned or sequential action index.
+              minimum: 0
+              maximum: 7
+              description: Numeric `GameAction` ID that produced the frame (`0` is RESET).
             data:
               type: object
               description: Additional parameters originally sent with the action.
               additionalProperties: true
+            reasoning:
+              description: Optional caller-supplied reasoning value echoed with the action.
+        full_reset:
+          type: boolean
+          description: Whether the RESET created a new game rather than resetting the current level.
         available_actions:
           type: array
           description: List of available actions for the current game.
           items:
             type: integer
-            enum: [1, 2, 3, 4, 5, 6]
+            enum: [0, 1, 2, 3, 4, 5, 6, 7]
       required: [game_id, guid, frame, state, levels_completed, win_levels, action_input, available_actions]
 
 tags:
@@ -501,8 +525,7 @@ paths:
         Retrieves metadata for every game currently exposed by the
         ARC-AGI-3 platform.  
         Use this discovery endpoint to obtain `game_id` values before
-        opening a scorecard or issuing commands. Results are returned as
-        a flat array ordered alphabetically by `title`.
+        opening a scorecard or issuing commands.
       operationId: listGames
       security:
         - ApiKeyAuth: []
@@ -525,6 +548,49 @@ paths:
                       title: FT09
         '401':
           description: Missing or invalid **X-API-Key** header.
+
+  /api/games/{game_id}:
+    get:
+      tags: [Games]
+      summary: Retrieve game metadata
+      description: |
+        Retrieves metadata for one game. You may pass either the complete
+        versioned game ID or its stable ID prefix.
+      operationId: getGame
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: game_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Complete game ID or stable ID prefix (for example, `ls20`).
+      responses:
+        '200':
+          description: Game metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: No matching game was found.
+        '401':
+          description: Missing or invalid **X-API-Key** header.
+
+  /api/healthcheck:
+    get:
+      summary: Check API health
+      description: Returns a plain-text response when the API process is healthy.
+      operationId: healthcheck
+      responses:
+        '200':
+          description: API process is healthy.
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: okay
 
   /api/scorecard/open:
     post:
@@ -553,7 +619,7 @@ paths:
               full:
                 summary: With tags, link, and opaque blob
                 value:
-                  source_url: https://github.com/example/agent
+                  source_url: https://github.com/arcprize/docs
                   tags: [baseline, gpt-4o]
                   opaque:
                     model: gpt-4o
@@ -878,7 +944,7 @@ paths:
         Issues **ACTION 1** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move up” or “select option A”.
+        represent "move up" or "select option A".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -943,7 +1009,7 @@ paths:
         Issues **ACTION 2** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move down" or “select option B”.
+        represent "move down" or "select option B".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1008,7 +1074,7 @@ paths:
         Issues **ACTION 3** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move left” or “select option C”.
+        represent "move left" or "select option C".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1073,7 +1139,7 @@ paths:
         Issues **ACTION 4** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move right" or “select option D”.
+        represent "move right" or "select option D".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1138,7 +1204,7 @@ paths:
         Issues **ACTION 5** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “jump”, "rotate", "fire" or “select option E”.
+        represent "jump", "rotate", "fire" or "select option E".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1202,8 +1268,8 @@ paths:
       description: |
         Issues **ACTION 6**—a two-parameter command that supplies explicit
         X/Y coordinates—to an active game session.  Common use-cases
-        include “click/tap at (x,y)”, “place a tile”, or “shoot a
-        projectile,” depending on the game's mechanics.
+        include "click/tap at (x,y)", "place a tile", or "shoot a
+        projectile," depending on the game's mechanics.
 
         Required fields  
         • `game_id` — the game to act in  

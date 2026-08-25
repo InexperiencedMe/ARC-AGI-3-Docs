@@ -5,26 +5,26 @@ description: "Run repeatable agent evaluations."
 icon: "bar-chart-3"
 ---
 
-Currently in beta, our Benchmarking Agent will be the standard way to measure AI performance across model providers.
+Currently in beta, the benchmarking harness provides a repeatable way to measure AI performance across model providers.
 
-## ARC Harness `arcagi3`
+## ARC-AGI-3 Benchmarking Harness
 
-This is a developer harness for building and benchmarking agentic research workflows on the **ARC-AGI-3** corpus of environments.
+This developer harness runs model configurations against one or more ARC-AGI-3 environments, records each run, and produces an online scorecard.
 
 ## When to use it
 
 - Compare model versions or prompt strategies on the same game set.
 - Detect regressions after code or prompt changes.
 - Generate official scorecards and replays for sharing.
-- Experimenting with multiple custom agentic architectures.
+- Experiment with model configurations and agent architectures.
 
 
 ## Quickstart
 
 ### Prerequisites
 
-- **Python**: `3.9+`
-- **uv**: recommended package manager. Install from [uv.pm](https://github.com/astral-sh/uv) or `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- **Python**: `3.12+`
+- **uv**: package manager. Follow the [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
 - **ARC-AGI-3 API key**: required to talk to the ARC server. Sign up for a key [here](https://arcprize.org/platform)
 
 ### Install
@@ -32,7 +32,7 @@ This is a developer harness for building and benchmarking agentic research workf
 Clone the repository:
 
 ```bash
-git clone git@github.com:arcprize/arc-agi-3-benchmarking.git
+git clone https://github.com/arcprize/arc-agi-3-benchmarking.git
 cd arc-agi-3-benchmarking
 ```
 
@@ -43,55 +43,78 @@ uv venv
 uv sync
 ```
 
-This creates a virtual environment (if needed) and installs the project and dependencies in editable mode.
-
-Alternatively, without `uv`:
+Copy the example environment file:
 
 ```bash
-pip install -e .
+cp .env.example .env
 ```
 
 ### Setting up your environment
 
 Set the ARC API key and your provider keys. You can put them in a `.env` file (see [`.env.example`](https://github.com/arcprize/arc-agi-3-benchmarking/blob/main/.env.example)) or export them in your shell.
 
-Provider key links:
+The checked-in model configurations currently use these providers:
 
-- [OpenAI](https://platform.openai.com/account/api-keys)
-- [Anthropic](https://console.anthropic.com/account/api-keys)
+- [OpenAI](https://developers.openai.com/api/docs/quickstart)
+- [Anthropic](https://platform.claude.com/docs/en/manage-claude/authentication)
 - [Google Gemini](https://console.cloud.google.com/apis/credentials)
+- [xAI](https://docs.x.ai/developers/quickstart)
 - [OpenRouter](https://openrouter.ai/api-keys)
-- [Fireworks](https://app.fireworks.ai/account/api-keys)
-- [Groq](https://groq.com/account/api-keys)
-- [DeepSeek](https://console.deepseek.com/account/api-keys)
-- [Hugging Face](https://huggingface.co/settings/tokens)
 
-Check configuration:
+Set `ARC_API_KEY` and the provider key required by your chosen model configuration in `.env`. For example:
 
 ```bash
-uv run python -m arcagi3.runner --check
+ARC_API_KEY=your_arc_api_key_here
+OPENAI_API_KEY=your_openai_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
+GOOGLE_API_KEY=your_google_key_here
+XAI_API_KEY=your_xai_key_here
+OPENROUTER_API_KEY=your_openrouter_key_here
 ```
 
 ### Select your game
 
 ```bash
-uv run python -m arcagi3.runner --list-games
+uv run main.py --list-games
 ```
 
 ### Pick your model
 
 ```bash
-uv run python -m arcagi3.runner --list-models
+uv run main.py --list-configs
 ```
 
 ### Benchmark
 
 ```bash
-uv run python -m arcagi3.runner \
-  --game_id ls20 \
-  --config gpt-5-2-openrouter \
-  --max_actions 3
+uv run main.py \
+  --game=ls20 \
+  --config=openai-gpt-5-4-2026-03-05
 ```
+
+The `--game` option accepts comma-separated game ID prefixes. Omit it to run all available games:
+
+```bash
+uv run main.py --config=openai-gpt-5-4-2026-03-05
+```
+
+Use `--tags=experiment,v1` to add custom scorecard tags.
+
+### Action output
+
+The harness accepts either free-text responses containing an available action name or structured JSON containing exactly one action:
+
+```json
+{"actions": [{"action_type": "ACTION1"}]}
+```
+
+For `ACTION6`, include integer `x` and `y` values from 0 through 63:
+
+```json
+{"actions": [{"action_type": "ACTION6", "x": 32, "y": 32}]}
+```
+
+Invalid structured responses are retried rather than parsed as free text. Before action metadata is sent to ARC, the harness trims large output and reasoning fields to keep the serialized payload within 16 KB. Full model responses remain available in local step recordings.
 
 ### Scorecards
 
@@ -99,4 +122,4 @@ When you run a benchmark, a scorecard is saved on the ARC server. If you are log
 
 ## Learn More
 
-The [benchmarking README](https://github.com/arcprize/arc-agi-3-benchmarking#readme) has more information than what is published here. Be sure to also reference how to [create your own agent](https://github.com/arcprize/arc-agi-3-benchmarking/blob/main/docs/create_agent.md) to start experimenting with new agentic architectures.
+See the [benchmarking repository](https://github.com/arcprize/arc-agi-3-benchmarking#readme) for the latest model configurations and implementation details.

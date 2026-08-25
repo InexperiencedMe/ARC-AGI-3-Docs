@@ -1,7 +1,7 @@
 # Mintlify documentation
 
 ## Working relationship
-- You can push back on ideas-this can lead to better documentation. Cite sources and explain your reasoning when you do so
+- You can push back on ideas—this can lead to better documentation. Cite sources and explain your reasoning when you do so
 - ALWAYS ask for clarification rather than making assumptions
 - NEVER lie, guess, or make up anything
 

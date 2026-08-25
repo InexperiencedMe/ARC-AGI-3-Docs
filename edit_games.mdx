@@ -11,7 +11,7 @@ Game files are stored in an environments directory. The default is `environment_
 You can configure this in your `.env` file:
 
 ```dotenv
-environments_dir = my_environments
+ENVIRONMENTS_DIR=my_environments
 ```
 
 Or specify it directly when initializing the client:
@@ -24,7 +24,7 @@ arc = arc_agi.Arcade(environments_dir="./my_environments")
 
 The environments follow this directory structure:
 
-```
+```text
 ARC-AGI/
 └── environment_files/
     └── ls20/
@@ -49,7 +49,7 @@ xcopy environment_files\ls20\v1 environment_files\ls20\v2\ /E /I
 
 Your directory now looks like this:
 
-```
+```text
 ARC-AGI/
 └── environment_files/
     └── ls20/
@@ -66,10 +66,11 @@ Then update `metadata.json` with the new version ([more info](/add_game#metadata
 ```json
 {
   "game_id": "ls20-v2",
-  "default_fps": 5,
-  "local_dir": "environment_files\\ls20\\v2"
+  "default_fps": 5
 }
 ```
+
+The Toolkit derives the local directory from the location of `metadata.json`.
 
 Test the new version:
 
@@ -96,23 +97,26 @@ from arcengine import ARCBaseGame, Camera, GameAction, Level, Sprite
 
 # Sprite definitions
 sprites = {
-    "sprite-1": Sprite(pixels=[...], name="sprite-1", ...),
-    "sprite-2": Sprite(pixels=[...], name="sprite-2", ...),
-    # ...
+    "sprite-1": Sprite(pixels=[[9]], name="sprite-1"),
+    "sprite-2": Sprite(pixels=[[14]], name="sprite-2"),
 }
 
 # Level definitions
 levels = [
-    Level(sprites=[sprites["sprite-1"].clone().set_position(0, 0)...], grid_size=(64, 64), data={...}),
-    Level(sprites=[sprites["sprite-2"].clone().set_position(0, 0)...], grid_size=(64, 64), data={...}),
-    # ...
+    Level(
+        sprites=[sprites["sprite-1"].clone().set_position(0, 0)],
+        grid_size=(64, 64),
+    ),
+    Level(
+        sprites=[sprites["sprite-2"].clone().set_position(0, 0)],
+        grid_size=(64, 64),
+    ),
 ]
 
 # Game class
-class Game-id(ARCBaseGame):
+class Ls20(ARCBaseGame):
     def __init__(self) -> None:
-        # Initialize camera, UI, game state
-        ...
+        super().__init__(game_id="ls20", levels=levels, camera=Camera())
     
     def on_set_level(self, level: Level) -> None:
         # Called when a level loads - setup level-specific state
@@ -188,13 +192,13 @@ The `data` dictionary stores level-specific configuration. This will vary for ev
 data={
     "Amount": 30,
     "Values": [5, 0, 2],
-    "level_flag": False
+    "level_flag": False,
     "names": ["name-1", "name-2"],
 }
 ```
 
 
-level data is accessed in the game class:
+Level data is accessed in the game class:
 
 ```python
 self.amount = self.current_level.get_data("Amount")

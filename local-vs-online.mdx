@@ -11,7 +11,7 @@ Choose how you want to run ARC-AGI-3 games.
     Fast, no rate limits, run many instances
   </Card>
   <Card title="Online" icon="cloud" href="#online">
-    Scorecards, replays, requires API key
+    Online scorecards and replays; registered key optional
   </Card>
 </CardGroup>
 
@@ -46,9 +46,11 @@ env = arc.make("ls20", render_mode="terminal")
 
 | Advantages | Limitations |
 |------------|-------------|
-| View [scorecards](/scorecards) online | Requires [API key](/api-keys) |
+| View [scorecards](/scorecards) online | Anonymous access includes fewer games |
 | Shareable [replays](/recordings) | Capped at [600 requests per minute](/rate_limits) |
 | Results appear on leaderboard | |
+
+If `ARC_API_KEY` is unset, the Toolkit fetches an anonymous key automatically. [Register for an API key](/api-keys) to access additional games.
 
 ## Learn More
 
