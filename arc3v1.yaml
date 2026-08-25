@@ -62,7 +62,7 @@ components:
         Optional metadata sent when opening a scorecard.  
         Every field is optional; omit any you don't need.  
         Use this to attach provenance links, free-form tags, or an
-        “opaque” JSON blob describing the run (e.g. model settings,
+        "opaque" JSON blob describing the run (e.g. model settings,
         hyper-parameters, experiment notes). The opaque payload must not
         exceed 16 KB once serialized.
       properties:
@@ -79,11 +79,14 @@ components:
           description: |
             Any JSON-serializable value (≤ 16 KB). Stored verbatim; the service
             does not inspect or validate its structure.
+        competition_mode:
+          type: boolean
+          description: Set to `true` to enable competition restrictions for this scorecard.
 
     OpenScorecardResponse:
       type: object
       description: |
-        Response returned after a successful “open scorecard” request.
+        Response returned after a successful "open scorecard" request.
         Contains the server-generated identifier for this tracked run.
       properties:
         card_id:
@@ -330,13 +333,9 @@ components:
           description: Number of environments.
       required:
         - id
-        - guid
         - score
         - levels_completed
         - actions
-        - resets
-        - state
-        - completed
         - number_of_levels
         - number_of_environments
 
@@ -353,7 +352,7 @@ components:
         • **With `guid`** → The server issues a reset to that specific
           instance:
             - If at least one ACTION command has been executed in the **current
-              level**, only that level is reset (typical “try again” behaviour).
+              level**, only that level is reset (typical "try again" behaviour).
             - If no ACTION commands have been executed since the last level
               transition, the entire game is reset to its initial state.
 
@@ -396,7 +395,7 @@ components:
           description: Server-generated session ID obtained from a RESET response.
         reasoning:
           description: |
-            Optional, caller-defined JSON value capturing the
+            Optional, caller-defined JSON value (≤ 16 KB once serialized) capturing the
             agent's internal reasoning, model parameters, or any other
             metadata you'd like to store alongside the action.
       required: [game_id, guid]
@@ -429,7 +428,7 @@ components:
           description: Vertical coordinate on the game grid (0 = top, 63 = bottom).
         reasoning:
           description: |
-            Optional, caller-defined JSON value capturing the
+            Optional, caller-defined JSON value (≤ 16 KB once serialized) capturing the
             agent's internal reasoning, model parameters, or any other
             metadata you'd like to store alongside the action.
       required: [game_id, guid, x, y]
@@ -578,6 +577,20 @@ paths:
           description: No matching game was found.
         '401':
           description: Missing or invalid **X-API-Key** header.
+
+  /api/healthcheck:
+    get:
+      summary: Check API health
+      description: Returns a plain-text response when the API process is healthy.
+      operationId: healthcheck
+      responses:
+        '200':
+          description: API process is healthy.
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: okay
 
   /api/scorecard/open:
     post:
@@ -931,7 +944,7 @@ paths:
         Issues **ACTION 1** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move up” or “select option A”.
+        represent "move up" or "select option A".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -996,7 +1009,7 @@ paths:
         Issues **ACTION 2** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move down" or “select option B”.
+        represent "move down" or "select option B".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1061,7 +1074,7 @@ paths:
         Issues **ACTION 3** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move left” or “select option C”.
+        represent "move left" or "select option C".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1126,7 +1139,7 @@ paths:
         Issues **ACTION 4** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “move right" or “select option D”.
+        represent "move right" or "select option D".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1191,7 +1204,7 @@ paths:
         Issues **ACTION 5** to the specified game session.  
         This is a single-parameter command (no X/Y coordinates): the exact
         in-game effect depends on the title—for example, it might
-        represent “jump”, "rotate", "fire" or “select option E”.
+        represent "jump", "rotate", "fire" or "select option E".
 
         The request must include:
         • `game_id` — which game to act on  
@@ -1255,8 +1268,8 @@ paths:
       description: |
         Issues **ACTION 6**—a two-parameter command that supplies explicit
         X/Y coordinates—to an active game session.  Common use-cases
-        include “click/tap at (x,y)”, “place a tile”, or “shoot a
-        projectile,” depending on the game's mechanics.
+        include "click/tap at (x,y)", "place a tile", or "shoot a
+        projectile," depending on the game's mechanics.
 
         Required fields  
         • `game_id` — the game to act in  
