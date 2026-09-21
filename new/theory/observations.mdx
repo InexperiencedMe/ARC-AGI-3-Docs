@@ -9,9 +9,9 @@ mode: "wide"
 At every timestep of ARC-AGI-3, the environment provides an agent with observation data. This data contains the main visual state of the environment
 alongside important metadata describing what level the agent is on, game status, available actions, and more.
 
-## Game Frame
+## Game Frames
 
-Main observation is a game frame in the form of a grid made of integers that directly map to colors according to the official color palette.
+The primary observation consists of game frames - 2D grids of integers that directly map to the official color palette.
 
 <Columns cols={2}>
   <Column>
@@ -77,14 +77,28 @@ Main observation is a game frame in the form of a grid made of integers that dir
 </Columns>
 
 <p className="text-center text-sm text-gray-500">
-An example DO55 game frame alongside the ARC-AGI color palette.
+An example DO22 game frame alongside the ARC-AGI color palette.
 </p>
 
 ### Frame Grid Structure
 
 - **Dimensions:** 64x64
 - **Cell Values:** Integer values 0-15 representing different states/colors
-- **Coordinate System:** (0, 0) at top-left, (x, y) format
+- **Coordinate System:** (0, 0) at top-left. In code, 2D grid arrays are indexed as `[y][x]` (row, column).
+
+### Multi-frame Animations
+
+In the game engine, `frame` is provided as a 3D array (`list[list[list[int]]]`) structured as `[time, height, width]`.
+Because actions can trigger multi-frame animations such as sliding, the engine records all intermediate frames before
+returning control to the agent:
+
+- **Instant actions:** Return a single 64×64 grid (`len(frame) == 1`).
+- **Animation-triggering actions:** Return a sequence of intermediate frames capturing the transition (`len(frame) > 1`).
+
+<Tip>
+For simplicity, many agents only need the newest frame and access it with `frame[-1]`. However, if your agent can make use
+of seeing the animation - feel free to process all frames.
+</Tip>
 
 ---
 
@@ -92,7 +106,7 @@ An example DO55 game frame alongside the ARC-AGI color palette.
 Here are more data fields that are given to the agent alongside each game frame.
 
 ### Game State
-At every step, a game can be in 4 diferent states:
+At every step, a game can be in 4 different states:
 
 | State | Description |
 |---|---|
@@ -103,10 +117,52 @@ At every step, a game can be in 4 diferent states:
 
 ### Level & Progress
 
-Because each environment has multiple levels, rather than agent having to keep track of it, the environment informs in every observation about
-what level the agent is currently on and how many it has completed.
+Because each environment has multiple levels, the environment informs the agent at every step how many levels
+it has completed and how many are required to win the game.
 
 | Field | Type | Description |
 |---|---|---|
 | `levels_completed` | `integer` | The cumulative number of levels the agent has successfully solved in the current run (starts at `0`). |
 | `win_levels` | `integer` | The total number of completed levels required to reach the `WIN` game state. |
+
+When an agent clears a level, the environment automatically increments `levels_completed` by 1, and when `levels_completed == win_levels`,
+the game state changes to `WIN`.
+
+### Available actions
+
+Final important metadata for each observation is a list of available actions. 
+<Note>Note that it is not a dynamic list, but a constant one. For example, even though walking into a wall doesn't
+advance the game's state, it still counts towards action count and shows up in `available_actions`.</Note>
+
+| Field | Type | Description |
+|---|---|---|
+| `available_actions` | `list[int]` | A constant list of action IDs valid for the current game. |
+
+Depending on the game, these actions might include up, down, left and right movements, special actions, a mouse click, and even an undo action.
+All actions are described in greater detail in the [Action Space](/theory/action-space) page.
+
+---
+
+## Complete Observation Payload
+
+Putting it all together, each environment step provides an agent with data, in the format that conceptually looks like this:
+
+```jsonc
+{
+  // One or more frames
+  "frame": [
+    [
+      [0, 0, 4, 4, 9, 9 ...],
+      [0, 0, 4, 4, 9, 9 ...],
+      ...
+    ]
+  ],
+  "state": "NOT_FINISHED",
+  "levels_completed": 1,
+  "win_levels": 5,
+  "available_actions": [1, 2, 3, 4, 6]
+}
+```
+
+With that, you understand what information the environments provide. To learn how to get this data programmatically,
+you can explore our Frameworks and APIs, beginning with [Tools Overview](LINK_NEEDED).
