@@ -1,74 +1,112 @@
-At every timestep, each agent is provided with a 
+---
+title: "Observations - Agent Input Space"
+sidebarTitle: "Observations"
+description: "Conceptual explanation of what information is provided by each environment"
+icon: "eye"
+mode: "wide"
+---
 
-<div className="flex flex-col items-center gap-3">
-  <div className="grid grid-cols-8 gap-2">
-    <Tooltip tip="0">
-      <div className="w-12 h-12 rounded-md border border-gray-200 dark:border-gray-700 bg-[#FFFFFF]" />
-    </Tooltip>
+At every timestep of ARC-AGI-3, the environment provides an agent with observation data. This data contains the main visual state of the environment
+alongside important metadata describing what level the agent is on, game status, available actions, and more.
 
-    <Tooltip tip="1">
-      <div className="w-12 h-12 rounded-md bg-[#CCCCCC]" />
-    </Tooltip>
+## Game Frame
 
-    <Tooltip tip="2">
-      <div className="w-12 h-12 rounded-md bg-[#999999]" />
-    </Tooltip>
+Main observation is a game frame in the form of a grid made of integers that directly map to colors according to the official color palette.
 
-    <Tooltip tip="3">
-      <div className="w-12 h-12 rounded-md bg-[#666666]" />
-    </Tooltip>
+<Columns cols={2}>
+  <Column>
+    <img
+      src="/media/do22-level5.png"
+      alt="Example ARC-AGI-3 frame"
+      style={{ margin: 0 }}
+    />
+  </Column>
 
-    <Tooltip tip="4">
-      <div className="w-12 h-12 rounded-md bg-[#333333]" />
-    </Tooltip>
-
-    <Tooltip tip="5">
-      <div className="w-12 h-12 rounded-md bg-[#000000]" />
-    </Tooltip>
-
-    <Tooltip tip="6">
-      <div className="w-12 h-12 rounded-md bg-[#E53AA3]" />
-    </Tooltip>
-
-    <Tooltip tip="7">
-      <div className="w-12 h-12 rounded-md bg-[#FF7BCC]" />
-    </Tooltip>
-
-    <Tooltip tip="8">
-      <div className="w-12 h-12 rounded-md bg-[#F93C31]" />
-    </Tooltip>
-
-    <Tooltip tip="9">
-      <div className="w-12 h-12 rounded-md bg-[#1E93FF]" />
-    </Tooltip>
-
-    <Tooltip tip="10">
-      <div className="w-12 h-12 rounded-md bg-[#88D8F1]" />
-    </Tooltip>
-
-    <Tooltip tip="11">
-      <div className="w-12 h-12 rounded-md bg-[#FFDC00]" />
-    </Tooltip>
-
-    <Tooltip tip="12">
-      <div className="w-12 h-12 rounded-md bg-[#FF851B]" />
-    </Tooltip>
-
-    <Tooltip tip="13">
-      <div className="w-12 h-12 rounded-md bg-[#921231]" />
-    </Tooltip>
-
-    <Tooltip tip="14">
-      <div className="w-12 h-12 rounded-md bg-[#4FCC30]" />
-    </Tooltip>
-
-    <Tooltip tip="15">
-      <div className="w-12 h-12 rounded-md bg-[#A356D6]" />
-    </Tooltip>
+  <Column>
+    <div className="grid grid-cols-4 gap-2 w-full aspect-square">
+    <div aria-label="Color 0" className="arc-color border border-gray-300 bg-[#FFFFFF]">
+      <span>0</span>
+    </div>
+    <div aria-label="Color 1" className="arc-color bg-[#CCCCCC]">
+      <span>1</span>
+    </div>
+    <div aria-label="Color 2" className="arc-color bg-[#999999]">
+      <span>2</span>
+    </div>
+    <div aria-label="Color 3" className="arc-color bg-[#666666]">
+      <span>3</span>
+    </div>
+    <div aria-label="Color 4" className="arc-color bg-[#333333]">
+      <span>4</span>
+    </div>
+    <div aria-label="Color 5" className="arc-color bg-[#000000]">
+      <span>5</span>
+    </div>
+    <div aria-label="Color 6" className="arc-color bg-[#E53AA3]">
+      <span>6</span>
+    </div>
+    <div aria-label="Color 7" className="arc-color bg-[#FF7BCC]">
+      <span>7</span>
+    </div>
+    <div aria-label="Color 8" className="arc-color bg-[#F93C31]">
+      <span>8</span>
+    </div>
+    <div aria-label="Color 9" className="arc-color bg-[#1E93FF]">
+      <span>9</span>
+    </div>
+    <div aria-label="Color 10" className="arc-color bg-[#88D8F1]">
+      <span>10</span>
+    </div>
+    <div aria-label="Color 11" className="arc-color bg-[#FFDC00]">
+      <span>11</span>
+    </div>
+    <div aria-label="Color 12" className="arc-color bg-[#FF851B]">
+      <span>12</span>
+    </div>
+    <div aria-label="Color 13" className="arc-color bg-[#921231]">
+      <span>13</span>
+    </div>
+    <div aria-label="Color 14" className="arc-color bg-[#4FCC30]">
+      <span>14</span>
+    </div>
+    <div aria-label="Color 15" className="arc-color bg-[#A356D6]">
+      <span>15</span>
+    </div>
   </div>
+  </Column>
+</Columns>
 
-  <p className="text-center text-sm text-gray-500">
-    ARC-AGI-3 frames are represented as 64×64 grids of integers from 0 to 15,
-    with each integer corresponding to a fixed color.
-  </p>
-</div>
+<p className="text-center text-sm text-gray-500">
+An example DO55 game frame alongside the ARC-AGI color palette.
+</p>
+
+### Frame Grid Structure
+
+- **Dimensions:** 64x64
+- **Cell Values:** Integer values 0-15 representing different states/colors
+- **Coordinate System:** (0, 0) at top-left, (x, y) format
+
+---
+
+## Additional Metadata
+Here are more data fields that are given to the agent alongside each game frame.
+
+### Game State
+At every step, a game can be in 4 diferent states:
+
+| State | Description |
+|---|---|
+| `NOT_PLAYED`    | No game has been started |
+| `NOT_FINISHED`  | The game is active and awaiting another action |
+| `WIN`           | The objective was completed successfully |
+| `GAME_OVER`     | The run ended without a win |
+
+### Level & Progress
+
+Because each environment has multiple levels, rather than agent having to keep track of it, the environment informs in every observation about
+what level the agent is currently on and how many it has completed.
+
+| Field | Type | Description |
+|---|---|---|
+| `levels_completed` | `integer` | The cumulative number of levels the agent has successfully solved in the current run (starts at `0`). |
+| `win_levels` | `integer` | The total number of completed levels required to reach the `WIN` game state. |

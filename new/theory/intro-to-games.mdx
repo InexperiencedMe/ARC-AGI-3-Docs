@@ -7,11 +7,11 @@ mode: "wide"
 
 ARC-AGI-3 consists of **135 turn-based games** split across three datasets.
 
-|Dataset|Game Count|Description|
+| Dataset | Game Count | Description |
 |---|---|---|
-|**Public**|25|Freely accessible games for demonstration, local development, prototyping and testing. You can [try them yourself](https://arcprize.org/tasks?v=3) to see the benchmark in action.
-|**Semi-Private**|55|Held-out games used to evaluate models behind external APIs subject to a small risk of data leakage.
-|**Fully Private**|55|Tightly guarded test set reserved exclusively for final competition scoring under strict rules.
+| **Public**         | 25 | Freely accessible games for demonstration, local development, prototyping and testing. You can [try them yourself](https://arcprize.org/tasks?v=3) to see the benchmark in action.
+| **Semi-Private**   | 55 | Held-out games used to evaluate models behind external APIs subject to a small risk of data leakage.
+| **Fully Private**  | 55 | Tightly guarded test set reserved exclusively for final competition scoring under strict rules.
 
 <Info>Public games are deliberately simpler and do not cover the full range of mechanics found in the private sets to reduce the risk of targeted training.</Info>
 
@@ -23,7 +23,7 @@ Each game consists of multiple levels, which introduces additional spatial and t
 - **Levels** are stages within a single game. They share underlying rules, but introduce progressively harder mechanics, obstacles and layouts.
 
 Solving a game requires an agent to master and remember the rules established in earlier levels and apply them to increasingly difficult conditions.
-Levels also introduce a significant challenge during competition, when failing a level means starting over from level 1.
+Levels also introduce a significant challenge during competition, when failing any level means starting over from level 1.
 
 ---
 
@@ -53,9 +53,10 @@ Each game presents the agent with visual environment represented as a 64x64 grid
 </div>
 
 The agent is not told what those cells mean - it has to infer everything from interaction. It has to discover:
-- **Objects and their Roles**, which can be clusters of same-colored or different-colored cells, and their role is not known until interacted with.
-- **Color Semantics**, since colors vary for each game, but environments convey meaning through color. In the example frame above, a yellow donut is tightly connected to the yellow bar.
-- **Dynamics & Mechanics**: The agent must deduce how actions influence the environment and what rules govern motion (e.g., gravity, collisions).
+- **Objects and their Roles**, which can be clusters of same-colored or different-colored cells, and their role is not certain until interacted with.
+- **Color Semantics**, since colors vary for each game, but environments convey meaning through color. In the example frame above, a yellow "donut" is tightly connected to the yellow bar.
+- **Action Dynamics** to figure out how actions influence the environment.
+- **World Mechanics** to understand what rules govern motion (e.g., gravity, collisions).
 - **The Win Condition**: The environment does not declare what "success" is. The agent must hypothesize what is a win or a loss based on observed environment.
 
 Success in ARC-AGI-3 requires an agent to treat beating the environments as a scientific process: observing state changes, building causal models,
