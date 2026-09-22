@@ -45,6 +45,12 @@
                             "theory/action-space",
                             "theory/scoring"
                         ]
+                    },
+                    {
+                        "group": "Tools",
+                        "pages": [
+                            "tools/tools-overview"
+                        ]
                     }
                 ]
             }
