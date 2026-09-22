@@ -42,7 +42,8 @@
                         "pages": [
                             "theory/intro-to-games",
                             "theory/observations",
-                            "theory/action-space"
+                            "theory/action-space",
+                            "theory/scoring"
                         ]
                     }
                 ]
