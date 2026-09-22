@@ -95,8 +95,8 @@ The observation includes the frames from that action in chronological order, bef
 - **Animation-triggering actions:** Produce a sequence of frames showing the transition.
 
 <Tip>
-The final frame shows the environment when control returns to the agent. Earlier frames can provide useful clues
-about movement and other game mechanics.
+For simplicity, many agents only use the newest frame and discard the intermediate ones.
+However, if your agent can make use of seeing the animation - feel free to process all frames.
 </Tip>
 
 ---

@@ -22,7 +22,7 @@ Each game consists of multiple levels, which introduces additional spatial and t
 - **Games** are completely independent microworlds. The visual objects, the use of colors, mechanics, and goals of one game share nothing with the next.
 - **Levels** are stages within a single game. They share underlying rules, but introduce progressively harder mechanics, obstacles and layouts.
 
-Solving a game requires an agent to master and remember the rules established in earlier levels and apply them to increasingly difficult conditions.
+Solving a game requires an agent to master and remember the rules established in earlier levels and apply them in increasingly challenging situations.
 Levels also introduce a significant challenge during competition, when failing any level means starting over from level 1.
 
 ---
@@ -46,20 +46,21 @@ The exact information given to an agent at every step is covered on the [next pa
 
 ## Visual Discovery
 
-Each game presents the agent with visual environment represented as a 64x64 grid of colored cells, like the one shown below.
+Each game presents the agent with a visual environment represented as a 64x64 grid of colored cells, like the one shown below.
 
 <div className="w-[60%] mx-auto">
 ![ARC-AGI-3 Example Frame](/media/ls20-level4.png)
 </div>
 
 The agent is not told what those cells mean - it has to infer everything from interaction. It has to discover:
-- **Objects and their Roles**, which can be clusters of same-colored or different-colored cells, and their role is not certain until interacted with.
-- **Color Semantics**, since colors vary for each game, but environments convey meaning through color. In the example frame above, a yellow "donut" is tightly connected to the yellow bar.
-- **Action Dynamics** to figure out how actions influence the environment.
-- **World Mechanics** to understand what rules govern motion (e.g., gravity, collisions).
-- **The Win Condition**: The environment does not declare what "success" is. The agent must hypothesize what is a win or a loss based on observed environment.
+- **Objects and Their Roles:** Objects may consist of clusters of cells of the same or different colors. The agent must identify them and discover their roles through interaction.
+- **Color Semantics:** The meanings of colors vary between games, but environments convey meaning through color. In the example frame above, a yellow "donut" is tightly connected to the yellow bar.
+- **Action Dynamics:** How each action influences the environment and what is within agent's influence.
+- **World Mechanics:** Rules that govern how objects interact and move (e.g., gravity, collisions).
+- **The Win Condition:** The environment does not declare what "success" is. The agent must infer what constitutes a win or a loss by observing the environment.
 
-Success in ARC-AGI-3 requires an agent to treat beating the environments as a scientific process: observing state changes, building causal models,
-formulating hypotheses, testing those hypotheses with targeted actions, and drawing conclusions regarding win conditions.
+Success in ARC-AGI-3 requires an agent to approach solving the environments as a scientific process: observing state changes,
+building causal models, formulating hypotheses, testing them through targeted actions, and drawing conclusions about win conditions.
 
-The process is best visible when playing the [games](https://arcprize.org/tasks?v=3) yourself and seeing your own thinking process of what is required to beat a game.
+Playing the [games](https://arcprize.org/tasks?v=3) yourself makes this process clear: you can observe how you discover the rules and figure out what it
+takes to win.
