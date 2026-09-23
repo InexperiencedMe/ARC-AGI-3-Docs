@@ -25,3 +25,4 @@ That will open up your browser with the preview of the new docs, that you can co
 - My idea is to have an overview and summary of what is available to give people a sense of direction on how to proceed.
 - If we decide to hold repo's docs here, I would make dropdown of pages explaining concepts relating to this repo, like arc-agi-3-agents would need explanation on swarms and modes, local vs offline stuff.
 - After that's done, we can add the less crucial pages like feature requests and bugs, contributing, changelog.
+- Had to change the benchmark overview gif because it contained outdated level layout. Also took this opportunity to show ls20's last level only, it's immediately more interesting and more ilustrative of how challenging ARC-AGI-3 is and how it requires you to understand what is going on with incomplete information.
