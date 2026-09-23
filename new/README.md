@@ -9,7 +9,7 @@ mint dev
 ```
 That will open up your browser with the preview of the new docs, that you can compare with the official ones.
 
-# Structure Ideas - Sketchpad
+# Notes on docs remake structure
 
 - Groups of pages are neatly organized in folders for easier management with lots of doc pages.
 - get-started/benchmark-overview.mdx is the docs benchmark, roughly matching the old entrypoint. Explanation of what ARC-AGI-3, the main ideas, what makes it stand out, then link to further steps and Technical Report, which is well-written with unique information, so it's good to expose it more. Old docs linked to nonexistant page here.
@@ -26,3 +26,5 @@ That will open up your browser with the preview of the new docs, that you can co
 - If we decide to hold repo's docs here, I would make dropdown of pages explaining concepts relating to this repo, like arc-agi-3-agents would need explanation on swarms and modes, local vs offline stuff.
 - After that's done, we can add the less crucial pages like feature requests and bugs, contributing, changelog.
 - Had to change the benchmark overview gif because it contained outdated level layout. Also took this opportunity to show ls20's last level only, it's immediately more interesting and more ilustrative of how challenging ARC-AGI-3 is and how it requires you to understand what is going on with incomplete information.
+- Tools overview shows quick immediate recommendation of using the complete tool - Kaggle Starter. But then shows clear progression of how the ARC-AGI-3 tools are structured. Kaggle starter -> Agents -> ARC-AGI Toolkit -> ARCEngine.
+- Small note: the repo card from Mintlify includes repo's description, but these are often missing for arc agi repos, causing the cards to have a blank line, but it's a small detail.
