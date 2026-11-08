@@ -8,7 +8,7 @@
     "appearance": {
         "default": "dark"
     },
-    "favicon": "images/favicon.png",
+    "favicon": "/media/favicon.png",
     "icons": {
         "library": "lucide"
     },
@@ -21,8 +21,8 @@
         ]
     },
     "logo": {
-        "light": "images/ap-logo-stacked-margins_light.png",
-        "dark": "images/ap-logo-stacked-margins_dark.png",
+        "light": "/media/arc-prize-logo_light.png",
+        "dark": "/media/arc-prize-logo_dark.png",
         "href": "https://arcprize.org"
     },
     "navigation": {
@@ -33,76 +33,32 @@
                     {
                         "group": "Get Started",
                         "pages": [
-                            "index",
-                            "api-keys"
+                            "get-started/arc-agi-3-overview",
+                            "get-started/how-to-participate"
                         ]
                     },
                     {
-                        "group": "Core Concepts",
+                        "group": "Theory",
                         "pages": [
-                            {
-                                "group": "Games",
-                                "icon": "gamepad-2",
-                                "pages": [
-                                    "game-schema",
-                                    "available-games",
-                                    "actions"
-                                ]
-                            },
-                            {
-                                "group": "Scoring",
-                                "icon": "trophy",
-                                "pages": [
-                                    "methodology",
-                                    "scorecards"
-                                ]
-                            },
-                            "recordings",
-                            {
-                                "group": "Agents",
-                                "icon": "bot",
-                                "pages": [
-                                    "agents-quickstart",
-                                    "llm_agents",
-                                    "benchmarking-agent",
-                                    {
-                                        "group": "Partner Templates",
-                                        "icon": "copy",
-                                        "pages": [
-                                            "partner_templates/agentops",
-                                            "partner_templates/huggingface",
-                                            "partner_templates/anthropic",
-                                            "partner_templates/langchain",
-                                            "partner_templates/gpt-oss-kaggle"
-                                        ]
-                                    },
-                                    "create-agent"
-                                ]
-                            }
+                            "theory/intro-to-games",
+                            "theory/observations",
+                            "theory/action-space",
+                            "theory/scoring"
                         ]
                     },
                     {
-                        "group": "Further Reading",
+                        "group": "Tools",
                         "pages": [
-                            "local-vs-online",
-                            "full-play-test",
-                            "swarms",
-                            "arc-prize-2026"
-                        ]
-                    },
-                    {
-                        "group": "Learn More",
-                        "pages": [
-                            "arc-agi-3",
-                            "vocabulary"
+                            "tools/tools-overview",
+                            "tools/api-keys"
                         ]
                     },
                     {
                         "group": "Community",
                         "pages": [
-                            "feature-requests",
-                            "contributing",
-                            "changelog"
+                            "community/contributing",
+                            "community/feature-requests",
+                            "community/changelog"
                         ]
                     }
                 ]
@@ -113,10 +69,11 @@
                     {
                         "group": "Get Started",
                         "pages": [
-                            "toolkit/overview",
-                            "toolkit/minimal",
-                            "toolkit/competition_mode",
-                            "toolkit/listen_and_serve"
+                            "tools/ARC-AGI-Toolkit/overview",
+                            "tools/ARC-AGI-Toolkit/minimal",
+                            "tools/ARC-AGI-Toolkit/competition_mode",
+                            "tools/ARC-AGI-Toolkit/listen_and_serve",
+                            "tools/ARC-AGI-Toolkit/local-vs-online"
                         ]
                     },
                     {
@@ -125,47 +82,101 @@
                             {
                                 "group": "Games",
                                 "pages": [
-                                    "toolkit/list-games",
-                                    "add_game",
-                                    "edit_games"
+                                    "tools/ARC-AGI-Toolkit/list-games",
+                                    "tools/ARC-AGI-Toolkit/add_game",
+                                    "tools/ARC-AGI-Toolkit/edit_games",
+                                    "tools/ARC-AGI-Toolkit/render-games"
                                 ]
                             },
                             {
                                 "group": "Scorecards",
                                 "pages": [
-                                    "toolkit/get-scorecard",
-                                    "toolkit/create-scorecard",
-                                    "toolkit/close-scorecard"
+                                    "tools/ARC-AGI-Toolkit/scorecards",
+                                    "tools/ARC-AGI-Toolkit/get-scorecard",
+                                    "tools/ARC-AGI-Toolkit/create-scorecard",
+                                    "tools/ARC-AGI-Toolkit/close-scorecard"
                                 ]
                             },
                             {
                                 "group": "Actions",
                                 "pages": [
-                                    "toolkit/list-actions",
-                                    "toolkit/submit-action"
+                                    "tools/ARC-AGI-Toolkit/list-actions",
+                                    "tools/ARC-AGI-Toolkit/submit-action"
                                 ]
                             },
-                            "toolkit/render-games"
+                            "tools/ARC-AGI-Toolkit/recordings"
                         ]
                     },
                     {
                         "group": "API Reference",
                         "pages": [
-                            "toolkit/arc_agi",
-                            "toolkit/environment_wrapper"
+                            "tools/ARC-AGI-Toolkit/arc_agi",
+                            "tools/ARC-AGI-Toolkit/environment_wrapper"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Agents",
+                "groups": [
+                    {
+                        "group": "Get Started",
+                        "pages": [
+                            "tools/ARC-AGI-3-Agents/agents-quickstart",
+                            "tools/ARC-AGI-3-Agents/create-agent",
+                            "tools/ARC-AGI-3-Agents/llm_agents"
+                        ]
+                    },
+                    {
+                        "group": "Guides",
+                        "pages": [
+                            "tools/ARC-AGI-3-Agents/swarms"
+                        ]
+                    },
+                    {
+                        "group": "Partner Templates",
+                        "pages": [
+                            "tools/ARC-AGI-3-Agents/partner_templates/agentops",
+                            "tools/ARC-AGI-3-Agents/partner_templates/anthropic",
+                            "tools/ARC-AGI-3-Agents/partner_templates/gpt-oss-kaggle",
+                            "tools/ARC-AGI-3-Agents/partner_templates/huggingface",
+                            "tools/ARC-AGI-3-Agents/partner_templates/langchain"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Benchmarking",
+                "groups": [
+                    {
+                        "group": "Benchmarking",
+                        "pages": [
+                            "tools/ARC-AGI-3-Benchmarking/benchmarking-agent"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Kaggle Starter",
+                "groups": [
+                    {
+                        "group": "Competition",
+                        "pages": [
+                            "tools/ARC-AGI-3-Kaggle-Starter/arc-prize-2026"
                         ]
                     }
                 ]
             },
             {
                 "tab": "REST API",
-                "openapi": "arc3v1.yaml",
+                "openapi": "REST-API/arc3v1.yaml",
                 "groups": [
                     {
                         "group": "Using the API",
                         "pages": [
-                            "rest_overview",
-                            "rate_limits"
+                            "REST-API/rest_overview",
+                            "REST-API/rate_limits",
+                            "REST-API/full-play-test"
                         ]
                     }
                 ]
