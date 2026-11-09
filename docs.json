@@ -75,17 +75,6 @@
                 ]
             },
             {
-                "tab": "Benchmarking",
-                "groups": [
-                    {
-                        "group": "Benchmarking",
-                        "pages": [
-                            "tools/ARC-AGI-3-Benchmarking/benchmarking-agent"
-                        ]
-                    }
-                ]
-            },
-            {
                 "tab": "Agents",
                 "groups": [
                     {
@@ -177,6 +166,17 @@
                             "REST-API/rest_overview",
                             "REST-API/rate_limits",
                             "REST-API/full-play-test"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Benchmarking",
+                "groups": [
+                    {
+                        "group": "Benchmarking",
+                        "pages": [
+                            "tools/ARC-AGI-3-Benchmarking/benchmarking-agent"
                         ]
                     }
                 ]

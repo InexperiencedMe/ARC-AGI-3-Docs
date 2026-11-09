@@ -10,6 +10,5 @@ That will open up your browser with the preview of the docs.
 
 # Todo
 
-- Add repo docs links to tools-overview
 - Ensure all links work, since so many paths changed
 - Replays page probably should in overview because it spans API, toolkit and benchmarking

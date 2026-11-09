@@ -23,7 +23,7 @@ All repositories are open source, so you can inspect how each of them works.
   </div>
 </div>
 
-The [Kaggle Starter](https://github.com/arcprize/ARC-AGI-3-Kaggle-Starter) brings local development and Kaggle submission into one project.
+The **Kaggle Starter** brings local development and Kaggle submission into one project.
 Start here if you want to build an agent and enter the competition.
 
 It includes a working random agent, scripts for testing your agent locally on public games, and utilities for packaging
@@ -43,7 +43,7 @@ Internally, the starter uses **ARC-AGI-3-Agents** as its agent framework.
   </div>
 </div>
 
-[ARC-AGI-3-Agents](https://github.com/arcprize/ARC-AGI-3-Agents) provides the structure for building and running agents.
+**ARC-AGI-3-Agents** provides the structure for building and running agents.
 It includes an agent base class, example agents, and utilities for running agents across all benchmark games and recording their play.
 
 You supply the logic that chooses actions and decides when to stop, while the framework manages the interaction loop around those decisions.
@@ -63,7 +63,7 @@ To communicate with the environments, the framework uses the **ARC-AGI Toolkit**
   </div>
 </div>
 
-The [ARC-AGI Toolkit](https://github.com/arcprize/ARC-AGI) is the Python interface for interacting with ARC-AGI-3 environments.
+The **ARC-AGI Toolkit** is the Python interface for interacting with ARC-AGI-3 environments.
 It handles finding and initializing games, sending actions, receiving observations, and managing scorecards.
 
 For online play, it sends API requests to the servers hosting the games. It also supports downloading available games and running them
@@ -75,9 +75,23 @@ The games themselves are built on **ARCEngine**.
 ## ARCEngine
 <GitHub.Repo repo="arcprize/ARCEngine" variant="flat"/>
 
-[ARCEngine](https://github.com/arcprize/ARCEngine) is the Python game engine that ARC-AGI-3 games are built on.
+**ARCEngine** is the Python game engine that ARC-AGI-3 games are built on.
 It provides the building blocks for sprites, levels, collisions, and rendering,
 along with all the machinery that processes actions and produces game frames.
 
 Explore this repository if you want to understand how the environments work internally or build your own games.
 
+
+## ARC-AGI-3-Benchmarking
+<div className="repository-links">
+  <div>
+    <GitHub.Repo repo="arcprize/arc-agi-3-benchmarking" variant="flat"/>
+  </div>
+  <div>
+    <Card title="Documentation" icon="book-open" href="./ARC-AGI-3-Benchmarking/benchmarking-agent" horizontal arrow />
+  </div>
+</div>
+
+The **benchmarking harness** provides a repeatable way to evaluate LLM-based agents against ARC-AGI-3 games.
+
+You choose a model configuration and one or more games; the harness runs the evaluation, records each run, and produces an online scorecard.
