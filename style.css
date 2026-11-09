@@ -15,3 +15,26 @@
 .arc-color[aria-label="Color 5"] > span {
   color: white;
 }
+
+.repository-links {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.repository-links > div {
+  display: flex;
+  min-width: 0;
+}
+
+.repository-links > div > :first-child {
+  width: 100%;
+  margin-block: 0;
+}
+
+@media (max-width: 640px) {
+  .repository-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

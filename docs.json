@@ -49,7 +49,7 @@
                     {
                         "group": "Tools",
                         "pages": [
-                            "tools/tools-overview",
+                            "tools/repositories",
                             "tools/api-keys"
                         ]
                     },
@@ -64,7 +64,58 @@
                 ]
             },
             {
-                "tab": "ARC-AGI Toolkit",
+                "tab": "Kaggle Starter",
+                "groups": [
+                    {
+                        "group": "Competition",
+                        "pages": [
+                            "tools/ARC-AGI-3-Kaggle-Starter/arc-prize-2026"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Benchmarking",
+                "groups": [
+                    {
+                        "group": "Benchmarking",
+                        "pages": [
+                            "tools/ARC-AGI-3-Benchmarking/benchmarking-agent"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Agents",
+                "groups": [
+                    {
+                        "group": "Get Started",
+                        "pages": [
+                            "tools/ARC-AGI-3-Agents/agents-quickstart",
+                            "tools/ARC-AGI-3-Agents/create-agent",
+                            "tools/ARC-AGI-3-Agents/llm_agents"
+                        ]
+                    },
+                    {
+                        "group": "Guides",
+                        "pages": [
+                            "tools/ARC-AGI-3-Agents/swarms"
+                        ]
+                    },
+                    {
+                        "group": "Partner Templates",
+                        "pages": [
+                            "tools/ARC-AGI-3-Agents/partner_templates/agentops",
+                            "tools/ARC-AGI-3-Agents/partner_templates/anthropic",
+                            "tools/ARC-AGI-3-Agents/partner_templates/gpt-oss-kaggle",
+                            "tools/ARC-AGI-3-Agents/partner_templates/huggingface",
+                            "tools/ARC-AGI-3-Agents/partner_templates/langchain"
+                        ]
+                    }
+                ]
+            },
+            {
+                "tab": "Toolkit",
                 "groups": [
                     {
                         "group": "Get Started",
@@ -112,57 +163,6 @@
                         "pages": [
                             "tools/ARC-AGI-Toolkit/arc_agi",
                             "tools/ARC-AGI-Toolkit/environment_wrapper"
-                        ]
-                    }
-                ]
-            },
-            {
-                "tab": "Agents",
-                "groups": [
-                    {
-                        "group": "Get Started",
-                        "pages": [
-                            "tools/ARC-AGI-3-Agents/agents-quickstart",
-                            "tools/ARC-AGI-3-Agents/create-agent",
-                            "tools/ARC-AGI-3-Agents/llm_agents"
-                        ]
-                    },
-                    {
-                        "group": "Guides",
-                        "pages": [
-                            "tools/ARC-AGI-3-Agents/swarms"
-                        ]
-                    },
-                    {
-                        "group": "Partner Templates",
-                        "pages": [
-                            "tools/ARC-AGI-3-Agents/partner_templates/agentops",
-                            "tools/ARC-AGI-3-Agents/partner_templates/anthropic",
-                            "tools/ARC-AGI-3-Agents/partner_templates/gpt-oss-kaggle",
-                            "tools/ARC-AGI-3-Agents/partner_templates/huggingface",
-                            "tools/ARC-AGI-3-Agents/partner_templates/langchain"
-                        ]
-                    }
-                ]
-            },
-            {
-                "tab": "Benchmarking",
-                "groups": [
-                    {
-                        "group": "Benchmarking",
-                        "pages": [
-                            "tools/ARC-AGI-3-Benchmarking/benchmarking-agent"
-                        ]
-                    }
-                ]
-            },
-            {
-                "tab": "Kaggle Starter",
-                "groups": [
-                    {
-                        "group": "Competition",
-                        "pages": [
-                            "tools/ARC-AGI-3-Kaggle-Starter/arc-prize-2026"
                         ]
                     }
                 ]
