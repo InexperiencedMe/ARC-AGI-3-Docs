@@ -13,11 +13,11 @@ cd ARC-AGI-3-Agents
 
 Each `swarm`:
 
-- Creates one agent instance per [game](/games)
+- Creates one agent instance per [game](/theory/intro-to-games)
 - Runs all agents concurrently using threads
-- Automatically manages [scorecard](/scorecards) opening and closing
+- Automatically manages [scorecard](/tools/ARC-AGI-Toolkit/scorecards) opening and closing
 - Handles cleanup when all agents complete
-- Provides a link to view [replay](/recordings) online
+- Provides a link to view [replay](/tools/ARC-AGI-Toolkit/recordings) online
 
 ### Running the Agent Swarm
 
@@ -34,8 +34,8 @@ uv run main.py --agent <agent_name> [--game <game_filter>] [--tags <tag_list>]
 | Argument | Short | Required | Description |
 |----------|-------|----------|-------------|
 | `--agent` | `-a` | Yes | Choose which agent to run. Available agents can be found in the `agents/` directory. |
-| `--game` | `-g` | No | Filter [games](/games) by ID prefix. Can be comma-separated for multiple filters (e.g., `ls20,ft09`). If not specified, the agent plays all available games. |
-| `--tags` | `-t` | No | Comma-separated list of tags for the scorecard (e.g., `experiment,v1.0`). Tags help categorize and track different agent runs. Helpful when you want to compare different agents. Tags will be recorded on your [scorecards](/scorecards). |
+| `--game` | `-g` | No | Filter [games](/theory/intro-to-games) by ID prefix. Can be comma-separated for multiple filters (e.g., `ls20,ft09`). If not specified, the agent plays all available games. |
+| `--tags` | `-t` | No | Comma-separated list of tags for the scorecard (e.g., `experiment,v1.0`). Tags help categorize and track different agent runs. Helpful when you want to compare different agents. Tags will be recorded on your [scorecards](/tools/ARC-AGI-Toolkit/scorecards). |
 
 ### Examples
 
