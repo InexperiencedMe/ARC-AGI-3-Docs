@@ -7,7 +7,3 @@ To preview it locally, ensure you have [mintlify](https://www.mintlify.com/docs/
 mint dev
 ```
 That will open up your browser with the preview of the docs.
-
-# Todo
-
-- Replays page probably should in overview because it spans API, toolkit and benchmarking

@@ -50,6 +50,7 @@
                         "group": "Tools",
                         "pages": [
                             "tools/repositories",
+                            "tools/recordings",
                             "tools/api-keys"
                         ]
                     },
@@ -143,8 +144,7 @@
                                     "tools/ARC-AGI-Toolkit/list-actions",
                                     "tools/ARC-AGI-Toolkit/submit-action"
                                 ]
-                            },
-                            "tools/ARC-AGI-Toolkit/recordings"
+                            }
                         ]
                     },
                     {
